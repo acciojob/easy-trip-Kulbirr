@@ -8,10 +8,7 @@ import com.driver.model.Passenger;
 import io.swagger.models.auth.In;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Repository
 public class AirportRepository {
@@ -27,20 +24,22 @@ public class AirportRepository {
     }
 
     public String getLargestAirportName() {
-        int MaxTerminals = Integer.MIN_VALUE;
-        String LargestAirportName = null;
-
+        int count = 0;
         for (Airport airport : AirportDb.values()) {
-            if (airport.getNoOfTerminals() > MaxTerminals) {
-                MaxTerminals = airport.getNoOfTerminals();
-                LargestAirportName = airport.getAirportName();
-            } else if (airport.getNoOfTerminals() == MaxTerminals) {
-                if (airport.getAirportName().compareTo(LargestAirportName) < 0) {
-                    LargestAirportName = airport.getAirportName();
-                }
+            if (airport.getNoOfTerminals() >= count) {
+                count = airport.getNoOfTerminals();
             }
         }
-        return LargestAirportName;
+
+        List<String> list = new ArrayList<>();
+        for (Airport airport : AirportDb.values()) {
+            if (airport.getNoOfTerminals() == count) {
+                list.add(airport.getAirportName());
+            }
+        }
+        Collections.sort(list);
+
+        return list.get(0);
     }
 
     public double getShortestDurationOfPossibleBetweenTwoCities(City fromCity, City toCity) {
