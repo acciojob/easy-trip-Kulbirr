@@ -5,16 +5,16 @@ import com.driver.model.City;
 import com.driver.model.Flight;
 import com.driver.model.Passenger;
 import io.swagger.models.auth.In;
+import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
+@Repository
 public class AirportRepository {
     HashMap<String, Airport> airportHashMap = new HashMap<>();
     HashMap<Integer, Flight> flightHashMap = new HashMap<>();
     HashMap<Integer, Passenger> passengerHashMap = new HashMap<>();
     HashMap<Integer,List<Integer>> ticketHashMap = new HashMap<>();
-
-
 
 
 
