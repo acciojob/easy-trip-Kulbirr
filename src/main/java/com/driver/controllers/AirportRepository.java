@@ -8,8 +8,10 @@ import com.driver.model.Passenger;
 import io.swagger.models.auth.In;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 public class AirportRepository {
 
@@ -24,22 +26,20 @@ public class AirportRepository {
     }
 
     public String getLargestAirportName() {
-        int count = 0;
+        int MaxTerminals = Integer.MIN_VALUE;
+        String LargestAirportName = null;
+
         for (Airport airport : AirportDb.values()) {
-            if (airport.getNoOfTerminals() >= count) {
-                count = airport.getNoOfTerminals();
+            if (airport.getNoOfTerminals() > MaxTerminals) {
+                MaxTerminals = airport.getNoOfTerminals();
+                LargestAirportName = airport.getAirportName();
+            } else if (airport.getNoOfTerminals() == MaxTerminals) {
+                if (airport.getAirportName().compareTo(LargestAirportName) < 0) {
+                    LargestAirportName = airport.getAirportName();
+                }
             }
         }
-
-        List<String> list = new ArrayList<>();
-        for (Airport airport : AirportDb.values()) {
-            if (airport.getNoOfTerminals() == count) {
-                list.add(airport.getAirportName());
-            }
-        }
-        Collections.sort(list);
-
-        return list.get(0);
+        return LargestAirportName;
     }
 
     public double getShortestDurationOfPossibleBetweenTwoCities(City fromCity, City toCity) {
@@ -101,19 +101,15 @@ public class AirportRepository {
     public String cancelATicket(Integer flightId, Integer passengerId) {
         if(ticketDb.containsKey(flightId)){
             boolean removed = false;
-            List<Integer> List = ticketDb.get(flightId);
-            if(List == null)
-                return "FAILURE";
-            if(List.contains(passengerId)){
-                List.remove(passengerId);
-                removed = true;
-            }
-            if(removed) {
-                ticketDb.put(flightId, List);
-                return "SUCCESS";
-            }
-            else
-                return "FAILURE";
+            List<Integer> list = ticketDb.get(flightId);
+                if(list.contains(passengerId)){
+                    list.remove(passengerId);
+                    removed = true;
+                }
+                if(removed){
+                    ticketDb.put(flightId, list);
+                    return "SUCCESS";
+                }
         }
         return "FAILURE";
     }
